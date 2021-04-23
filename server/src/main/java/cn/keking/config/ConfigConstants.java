@@ -16,18 +16,25 @@ import java.util.Set;
 @Component
 public class ConfigConstants {
 
-    private static Boolean CACHE_ENABLED;
-    private static String[] SIM_TEXT = {};
-    private static String[] MEDIA = {};
-    private static String OFFICE_PREVIEW_TYPE;
-    private static String OFFICE_PREVIEW_SWITCH_DISABLED;
-    private static String FTP_USERNAME;
-    private static String FTP_PASSWORD;
-    private static String FTP_CONTROL_ENCODING;
-    private static String BASE_URL;
-    private static String FILE_DIR = ConfigUtils.getHomePath() + File.separator + "file" + File.separator;
-    private static CopyOnWriteArraySet<String> TRUST_HOST_SET;
-    private static String PDF_DOWNLOAD_DISABLE;
+    static {
+        //pdfbox兼容低版本jdk
+        System.setProperty("sun.java2d.cmm", "sun.java2d.cmm.kcms.KcmsServiceProvider");
+    }
+
+    private static Boolean cacheEnabled;
+    private static String[] simTexts = {};
+    private static String[] medias = {};
+    private static String[] convertMedias = {};
+    private static String mediaConvertDisable;
+    private static String officePreviewType;
+    private static String officePreviewSwitchDisabled;
+    private static String ftpUsername;
+    private static String ftpPassword;
+    private static String ftpControlEncoding;
+    private static String baseUrl;
+    private static String fileDir = ConfigUtils.getHomePath() + File.separator + "file" + File.separator;
+    private static CopyOnWriteArraySet<String> trustHostSet;
+    private static String pdfDownloadDisable;
 
     public static final String DEFAULT_CACHE_ENABLED = "true";
     public static final String DEFAULT_TXT_TYPE = "txt,html,htm,asp,jsp,xml,json,properties,md,gitignore,log,java,py,c,cpp,sql,sh,bat,m,bas,prg,cmd";
@@ -42,8 +49,9 @@ public class ConfigConstants {
     public static final String DEFAULT_TRUST_HOST = "default";
     public static final String DEFAULT_PDF_DOWNLOAD_DISABLE = "true";
 
+
     public static Boolean isCacheEnabled() {
-        return CACHE_ENABLED;
+        return cacheEnabled;
     }
 
     @Value("${cache.enabled:true}")
@@ -52,11 +60,11 @@ public class ConfigConstants {
     }
 
     public static void setCacheEnabledValueValue(Boolean cacheEnabled) {
-        CACHE_ENABLED = cacheEnabled;
+        ConfigConstants.cacheEnabled = cacheEnabled;
     }
 
     public static String[] getSimText() {
-        return SIM_TEXT;
+        return simTexts;
     }
 
     @Value("${simText:txt,html,htm,asp,jsp,xml,json,properties,md,gitignore,log,java,py,c,cpp,sql,sh,bat,m,bas,prg,cmd}")
@@ -66,11 +74,11 @@ public class ConfigConstants {
     }
 
     public static void setSimTextValue(String[] simText) {
-        SIM_TEXT = simText;
+        ConfigConstants.simTexts = simText;
     }
 
     public static String[] getMedia() {
-        return MEDIA;
+        return medias;
     }
 
     @Value("${media:mp3,wav,mp4,flv}")
@@ -80,11 +88,38 @@ public class ConfigConstants {
     }
 
     public static void setMediaValue(String[] Media) {
-        MEDIA = Media;
+        ConfigConstants.medias = Media;
+    }
+
+    public static String[] getConvertMedias() {
+        return convertMedias;
+    }
+
+    @Value("${convertMedias:avi,mov,wmv,mkv,3gp,rm}")
+    public void setConvertMedias(String convertMedia) {
+        String[] mediaArr = convertMedia.split(",");
+        setConvertMediaValue(mediaArr);
+    }
+
+    public static void setConvertMediaValue(String[] ConvertMedia) {
+        ConfigConstants.convertMedias = ConvertMedia;
+    }
+
+    public static String getMediaConvertDisable() {
+        return mediaConvertDisable;
+    }
+
+
+    @Value("${media.convert.disable:true}")
+    public void setMediaConvertDisable(String mediaConvertDisable) {
+        setMediaConvertDisableValue(mediaConvertDisable);
+    }
+    public static void setMediaConvertDisableValue(String mediaConvertDisable) {
+        ConfigConstants.mediaConvertDisable = mediaConvertDisable;
     }
 
     public static String getOfficePreviewType() {
-        return OFFICE_PREVIEW_TYPE;
+        return officePreviewType;
     }
 
     @Value("${office.preview.type:image}")
@@ -93,11 +128,11 @@ public class ConfigConstants {
     }
 
     public static void setOfficePreviewTypeValue(String officePreviewType) {
-        OFFICE_PREVIEW_TYPE = officePreviewType;
+        ConfigConstants.officePreviewType = officePreviewType;
     }
 
     public static String getFtpUsername() {
-        return FTP_USERNAME;
+        return ftpUsername;
     }
 
     @Value("${ftp.username:}")
@@ -106,11 +141,11 @@ public class ConfigConstants {
     }
 
     public static void setFtpUsernameValue(String ftpUsername) {
-        FTP_USERNAME = ftpUsername;
+        ConfigConstants.ftpUsername = ftpUsername;
     }
 
     public static String getFtpPassword() {
-        return FTP_PASSWORD;
+        return ftpPassword;
     }
 
     @Value("${ftp.password:}")
@@ -119,11 +154,11 @@ public class ConfigConstants {
     }
 
     public static void setFtpPasswordValue(String ftpPassword) {
-        FTP_PASSWORD = ftpPassword;
+        ConfigConstants.ftpPassword = ftpPassword;
     }
 
     public static String getFtpControlEncoding() {
-        return FTP_CONTROL_ENCODING;
+        return ftpControlEncoding;
     }
 
     @Value("${ftp.control.encoding:UTF-8}")
@@ -132,11 +167,11 @@ public class ConfigConstants {
     }
 
     public static void setFtpControlEncodingValue(String ftpControlEncoding) {
-        FTP_CONTROL_ENCODING = ftpControlEncoding;
+        ConfigConstants.ftpControlEncoding = ftpControlEncoding;
     }
 
     public static String getBaseUrl() {
-        return BASE_URL;
+        return baseUrl;
     }
 
     @Value("${base.url:default}")
@@ -145,11 +180,11 @@ public class ConfigConstants {
     }
 
     public static void setBaseUrlValue(String baseUrl) {
-        BASE_URL = baseUrl;
+        ConfigConstants.baseUrl = baseUrl;
     }
 
     public static String getFileDir() {
-        return FILE_DIR;
+        return fileDir;
     }
 
     @Value("${file.dir:default}")
@@ -162,7 +197,7 @@ public class ConfigConstants {
             if (!fileDir.endsWith(File.separator)) {
                 fileDir = fileDir + File.separator;
             }
-            FILE_DIR = fileDir;
+            ConfigConstants.fileDir = fileDir;
         }
     }
 
@@ -184,15 +219,15 @@ public class ConfigConstants {
     }
 
     public static Set<String> getTrustHostSet() {
-        return TRUST_HOST_SET;
+        return trustHostSet;
     }
 
     private static void setTrustHostSet(CopyOnWriteArraySet<String> trustHostSet) {
-        ConfigConstants.TRUST_HOST_SET = trustHostSet;
+        ConfigConstants.trustHostSet = trustHostSet;
     }
 
     public static String getPdfDownloadDisable() {
-        return PDF_DOWNLOAD_DISABLE;
+        return pdfDownloadDisable;
     }
 
 
@@ -201,17 +236,18 @@ public class ConfigConstants {
         setPdfDownloadDisableValue(pdfDownloadDisable);
     }
     public static void setPdfDownloadDisableValue(String pdfDownloadDisable) {
-        PDF_DOWNLOAD_DISABLE = pdfDownloadDisable;
+        ConfigConstants.pdfDownloadDisable = pdfDownloadDisable;
     }
 
     public static String getOfficePreviewSwitchDisabled() {
-        return OFFICE_PREVIEW_SWITCH_DISABLED;
+        return officePreviewSwitchDisabled;
     }
     @Value("${office.preview.switch.disabled:true}")
     public void setOfficePreviewSwitchDisabled(String officePreviewSwitchDisabled) {
-        OFFICE_PREVIEW_SWITCH_DISABLED = officePreviewSwitchDisabled;
+        ConfigConstants.officePreviewSwitchDisabled = officePreviewSwitchDisabled;
     }
     public static void setOfficePreviewSwitchDisabledValue(String officePreviewSwitchDisabled) {
-        OFFICE_PREVIEW_SWITCH_DISABLED = officePreviewSwitchDisabled;
+        ConfigConstants.officePreviewSwitchDisabled = officePreviewSwitchDisabled;
     }
+
 }
